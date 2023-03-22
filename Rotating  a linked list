@@ -1,0 +1,78 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+// Node structure
+struct Node {
+    int data;
+    struct Node* next;
+};
+
+// Function to insert a new node at the beginning of a linked list
+void insertNode(struct Node** head, int data) {
+    struct Node* newNode = (struct Node*)malloc(sizeof(struct Node));
+    newNode->data = data;
+    newNode->next = *head;
+    *head = newNode;
+}
+
+// Function to display the linked list
+void displayList(struct Node* node) {
+    while (node != NULL) {
+        printf("%d ", node->data);
+        node = node->next;
+    }
+    printf("\n");
+}
+
+// Function to rotate the linked list
+void rotateList(struct Node** head, int k) {
+    if (*head == NULL || (*head)->next == NULL || k == 0) {
+        return;
+    }
+    
+    // Find the kth node from the beginning of the list
+    struct Node* current = *head;
+    int count = 1;
+    while (count < k && current != NULL) {
+        current = current->next;
+        count++;
+    }
+    
+    if (current == NULL) {
+        return;
+    }
+    
+    // Save the kth node as the new head of the list
+    struct Node* kthNode = current;
+    
+    // Traverse to the end of the list and connect it with the original head
+    while (current->next != NULL) {
+        current = current->next;
+    }
+    current->next = *head;
+    
+    // Set the new head and break the connection with the original head
+    *head = kthNode->next;
+    kthNode->next = NULL;
+}
+
+int main() {
+    struct Node* head = NULL;
+    
+    // Insert nodes at the beginning of the list
+    insertNode(&head, 4);
+    insertNode(&head, 3);
+    insertNode(&head, 2);
+    insertNode(&head, 1);
+    
+    printf("Original list: ");
+    displayList(head);
+    
+    int k = 2;
+    rotateList(&head, k);
+    
+    printf("Rotated list: ");
+    displayList(head);
+    
+    return 0;
+}
