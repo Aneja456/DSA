@@ -1,0 +1,57 @@
+#include <stdio.h>
+#include <stdlib.h>
+
+/* Definition for a node. */
+struct Node {
+    int data;
+    struct Node *next;
+    struct Node *child;
+};
+
+/* Function to flatten a linked list. */
+void flattenList(struct Node *head) {
+    if (head == NULL) return;
+    struct Node *curr = head;
+    while (curr != NULL) {
+        if (curr->child != NULL) {
+            struct Node *next = curr->next;
+            curr->next = curr->child;
+            curr->child->prev = curr;
+            curr->child = NULL;
+            struct Node *child_tail = curr->next;
+            while (child_tail->next != NULL) {
+                child_tail = child_tail->next;
+            }
+            child_tail->next = next;
+            if (next != NULL) {
+                next->prev = child_tail;
+            }
+        }
+        curr = curr->next;
+    }
+}
+
+/* Function to create a new node. */
+struct Node *newNode(int data) {
+    struct Node *node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->next = NULL;
+    node->child = NULL;
+    return node;
+}
+
+/* Function to print a linked list. */
+void printList(struct Node *head) {
+    if (head == NULL) return;
+    printf("%d ", head->data);
+    printList(head->next);
+}
+
+/* Main function to test the above functions. */
+int main() {
+    struct Node *head = newNode(1);
+    head->next = newNode(2);
+    head->next->prev = head;
+    head->next->next = newNode(3);
+return 0;
+}
